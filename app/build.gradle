@@ -9,14 +9,20 @@ android {
         applicationId "com.urustin.codekeyboard"
         minSdkVersion 23
         targetSdk 35
-        versionCode 24
-        versionName "6.1.0-ko"
+        versionCode 25
+        versionName "0.1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    // APK 파일명을 버전 기준으로 자동 네이밍: code_keyboard-v<버전>-<빌드타입>.apk
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            output.outputFileName = "code_keyboard-v${variant.versionName}-${variant.buildType.name}.apk"
         }
     }
     compileOptions {
