@@ -72,7 +72,6 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
         // 주의: 롱프레스는 그 다음, 여기는 onDown 시점
         val ic: InputConnection = currentInputConnection
         var code = primaryCode.toChar()
-        Log.d(TAG, "onKey: $primaryCode")
 
         // 한글 모드: 자모는 조합기로 보내고, 백스페이스/그 외 키는 조합 확정 후 일반 처리
         if (koreanMode) {
@@ -209,7 +208,6 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                     }
                 }
                 if (ke != 0) {
-                    Log.d(TAG, "onKey: keyEvent $ke")
                     /*
                      * 스페이스 버튼에 ACTION_DOWN을 붙이지 않기 위한 분기.
                      * 스페이스가 롱프레스됐는지 먼저 확인한 뒤 올바른 출력을 내기 위함.
@@ -221,7 +219,6 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                 } else {
                     // 문자가 아닌 키들은 여기서 처리(수정자 미사용).
                     // 예: '0'(48)을 keyEvent로 처리하면 shift+0이 ')'가 되어버림
-                    Log.i(TAG, "onKey: committext " + code.toString())
                     ic.commitText(code.toString(), 1)
                 }
             }
