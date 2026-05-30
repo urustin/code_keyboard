@@ -156,7 +156,8 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                 var meta = 0
                 if (shift) {
                     meta = KeyEvent.META_SHIFT_ON
-                    code = code.uppercaseChar()
+                    // 숫자/기호는 매핑된 기호로, 그 외(글자)는 대문자로
+                    code = KeySymbols.SHIFT[code] ?: code.uppercaseChar()
                     if (!shiftLock) {
                         shift = false
                         ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SHIFT_LEFT))

@@ -1,6 +1,7 @@
 package com.urustin.codekeyboard.layout
 
 import android.content.Context
+import com.urustin.codekeyboard.KeySymbols
 import com.urustin.codekeyboard.R
 import com.urustin.codekeyboard.layout.builder.KeyboardLayoutBuilder
 
@@ -79,10 +80,12 @@ class Definitions(private val context: Context) {
         val half = (chars.size + 1) / 2
         for (i in 0 until half) {
             keyboard.addKey(chars[i]).withSize(.7f)
+            KeySymbols.SHIFT[chars[i]]?.let { keyboard.onShiftShow(it.toString()) }
         }
         keyboard.addKey(context.getDrawable(R.drawable.ic_space_bar_24dp), 32).withSize(2f)
         for (i in half until chars.size) {
             keyboard.addKey(chars[i]).withSize(.7f)
+            KeySymbols.SHIFT[chars[i]]?.let { keyboard.onShiftShow(it.toString()) }
         }
         keyboard.addEnterKey()
     }
@@ -94,7 +97,11 @@ class Definitions(private val context: Context) {
         @JvmStatic
         fun addCustomRow(keyboard: KeyboardLayoutBuilder, symbols: String) {
             keyboard.newRow()
-            for (c in symbols) keyboard.addKey(c)
+            for (c in symbols) {
+                keyboard.addKey(c)
+                // Shift 시 바뀌는 기호가 있으면 라벨도 표시
+                KeySymbols.SHIFT[c]?.let { keyboard.onShiftShow(it.toString()) }
+            }
         }
 
         @JvmStatic
