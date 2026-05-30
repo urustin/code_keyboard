@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">CodeBoard</string>
-    <string name="codeboard_ime">CodeBoard IME</string>
-    <string name="subtype_en_US">CodeBoard-%s</string>
-    <string name="subtype_fr_FR">CodeBoard-%s</string>
-    <string name="app_intro">CodeBoard - Intro</string>
+    <string name="app_name">Code Keyboard</string>
+    <string name="codeboard_ime">Code Keyboard IME</string>
+    <string name="subtype_en_US">Code Keyboard-%s</string>
+    <string name="subtype_fr_FR">Code Keyboard-%s</string>
+    <string name="app_intro">Code Keyboard - Intro</string>
     <string name="change_keyboard">Change Keyboard</string>
     <string name="reopen_hint">Click here to see changes</string>
     <string name="top_row_actions">Replace arrows with cut/copy/paste shortcuts?</string>

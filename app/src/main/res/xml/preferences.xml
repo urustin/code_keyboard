@@ -200,20 +200,20 @@
         <Preference android:title="Restart Tutorial">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:targetClass="com.gazlaws.codeboard.IntroActivity"
-                android:targetPackage="com.gazlaws.codeboard" />
+                android:targetClass="com.urustin.codekeyboard.IntroActivity"
+                android:targetPackage="com.urustin.codekeyboard" />
         </Preference>
         <Preference android:title="Rate on Google Play">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="market://details?id=com.gazlaws.codeboard" />
+                android:data="market://details?id=com.urustin.codekeyboard" />
         </Preference>
         <Preference
             android:summary="@string/github_summary"
             android:title="Open on GitHub">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/gazlaws-dev/codeboard" />
+                android:data="https://github.com/urustin/code_keyboard" />
         </Preference>
 
     </PreferenceCategory>
