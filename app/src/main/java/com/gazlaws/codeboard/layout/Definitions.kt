@@ -1,57 +1,105 @@
-package com.gazlaws.codeboard.layout;
+package com.gazlaws.codeboard.layout
 
-import android.content.Context;
+import android.content.Context
+import com.gazlaws.codeboard.R
+import com.gazlaws.codeboard.layout.builder.KeyboardLayoutBuilder
 
-import com.gazlaws.codeboard.R;
-import com.gazlaws.codeboard.layout.builder.KeyboardLayoutBuilder;
+// 각종 키보드 행(화살표/복사붙여넣기/QWERTY/기호 등)을 빌더에 추가하는 정의 모음
+class Definitions(private val context: Context) {
 
-public class Definitions {
-    private Context context;
-    private static final int CODE_ESCAPE = -2;
-    private static final int CODE_SYMBOLS = -1;
-
-    public Definitions(Context current) {
-        this.context = current;
-    }
-
-    public void addArrowsRow(KeyboardLayoutBuilder keyboard) {
-        int CODE_ARROW_LEFT = 5000;
-        int CODE_ARROW_DOWN = 5001;
-        int CODE_ARROW_UP = 5002;
-        int CODE_ARROW_RIGHT = 5003;
+    fun addArrowsRow(keyboard: KeyboardLayoutBuilder) {
+        val CODE_ARROW_LEFT = 5000
+        val CODE_ARROW_DOWN = 5001
+        val CODE_ARROW_UP = 5002
+        val CODE_ARROW_RIGHT = 5003
         keyboard.newRow()
-                .addKey("Esc", CODE_ESCAPE)
-                .addTabKey()
-                .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_left_24dp), CODE_ARROW_LEFT).asRepeatable()
-                .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_down_24dp), CODE_ARROW_DOWN).asRepeatable()
-                .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_up_24dp), CODE_ARROW_UP).asRepeatable()
-                .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_right_24dp), CODE_ARROW_RIGHT).asRepeatable()
-                .addKey("SYM", CODE_SYMBOLS).onCtrlShow("CLIP")
-        ;
+            .addKey("Esc", CODE_ESCAPE)
+            .addTabKey()
+            .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_left_24dp), CODE_ARROW_LEFT).asRepeatable()
+            .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_down_24dp), CODE_ARROW_DOWN).asRepeatable()
+            .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_up_24dp), CODE_ARROW_UP).asRepeatable()
+            .addKey(context.getDrawable(R.drawable.ic_keyboard_arrow_right_24dp), CODE_ARROW_RIGHT).asRepeatable()
+            .addKey("SYM", CODE_SYMBOLS).onCtrlShow("CLIP")
     }
 
-    public void addCopyPasteRow(KeyboardLayoutBuilder keyboard) {
+    fun addCopyPasteRow(keyboard: KeyboardLayoutBuilder) {
         keyboard.newRow()
-                .addKey("Esc", CODE_ESCAPE)
-                .addTabKey()
-                .addKey(context.getDrawable(R.drawable.ic_select_all_24dp), 53737)
-                .addKey(context.getDrawable(R.drawable.ic_cut_24dp), 53738)
-                .addKey(context.getDrawable(R.drawable.ic_copy_24dp), 53739)
-                .addKey(context.getDrawable(R.drawable.ic_paste_24dp), 53740)
-                .addKey("SYM", CODE_SYMBOLS).onCtrlShow("CLIP")
-        ;
+            .addKey("Esc", CODE_ESCAPE)
+            .addTabKey()
+            .addKey(context.getDrawable(R.drawable.ic_select_all_24dp), 53737)
+            .addKey(context.getDrawable(R.drawable.ic_cut_24dp), 53738)
+            .addKey(context.getDrawable(R.drawable.ic_copy_24dp), 53739)
+            .addKey(context.getDrawable(R.drawable.ic_paste_24dp), 53740)
+            .addKey("SYM", CODE_SYMBOLS).onCtrlShow("CLIP")
     }
 
-
-    public static void addCustomRow(KeyboardLayoutBuilder keyboard, String symbols) {
-        keyboard.newRow();
-        char[] chars = symbols.toCharArray();
-        for (char aChar : chars) keyboard.addKey(aChar);
-    }
-
-
-    public static void addQwertyRows(KeyboardLayoutBuilder keyboard) {
+    fun addSymbolRows(keyboard: KeyboardLayoutBuilder) {
         keyboard.newRow()
+            .addKey("Home", -18)
+            .addKey("End", -19)
+            .addKey("Del", -21)
+            .addKey("PgUp", -22)
+            .addKey("PgDn", -23)
+            .newRow()
+            .addShiftKey()
+            .addKey("F1", -6)
+            .addKey("F2", -7)
+            .addKey("F3", -8)
+            .addKey("F4", -9)
+            .addKey("F5", -10)
+            .addKey("F6", -11)
+            .addKey("F7", -12)
+            .addBackspaceKey()
+            .newRow()
+            .addKey("Ctrl", 17).asModifier().onCtrlShow("CTRL")
+            .addKey("F8", -13)
+            .addKey("F9", -14)
+            .addKey("F10", -15)
+            .addKey(context.getDrawable(R.drawable.ic_space_bar_24dp), 32).withSize(2f)
+            .addKey("F11", -16)
+            .addKey("F12", -17)
+            .addEnterKey()
+    }
+
+    fun addClipboardActions(keyboard: KeyboardLayoutBuilder) {
+        keyboard.newRow()
+            .addKey(context.getDrawable(R.drawable.ic_select_all_24dp), 53737)
+            .addKey(context.getDrawable(R.drawable.ic_cut_24dp), 53738)
+            .addKey(context.getDrawable(R.drawable.ic_copy_24dp), 53739)
+            .addKey(context.getDrawable(R.drawable.ic_paste_24dp), 53740)
+            .addKey(context.getDrawable(R.drawable.ic_undo_24dp), 53741)
+            .addKey(context.getDrawable(R.drawable.ic_redo_24dp), 53742)
+    }
+
+    fun addCustomSpaceRow(keyboard: KeyboardLayoutBuilder, symbols: String) {
+        val chars = symbols.toCharArray()
+
+        keyboard.newRow().addKey("Ctrl", 17).asModifier().onCtrlShow("CTRL")
+
+        val half = (chars.size + 1) / 2
+        for (i in 0 until half) {
+            keyboard.addKey(chars[i]).withSize(.7f)
+        }
+        keyboard.addKey(context.getDrawable(R.drawable.ic_space_bar_24dp), 32).withSize(2f)
+        for (i in half until chars.size) {
+            keyboard.addKey(chars[i]).withSize(.7f)
+        }
+        keyboard.addEnterKey()
+    }
+
+    companion object {
+        private const val CODE_ESCAPE = -2
+        private const val CODE_SYMBOLS = -1
+
+        @JvmStatic
+        fun addCustomRow(keyboard: KeyboardLayoutBuilder, symbols: String) {
+            keyboard.newRow()
+            for (c in symbols) keyboard.addKey(c)
+        }
+
+        @JvmStatic
+        fun addQwertyRows(keyboard: KeyboardLayoutBuilder) {
+            keyboard.newRow()
                 .addKey('q').onShiftUppercase()
                 .addKey('w').onShiftUppercase()
                 .addKey('e').onShiftUppercase()
@@ -82,11 +130,11 @@ public class Definitions {
                 .addKey('n').onShiftUppercase()
                 .addKey('m').onShiftUppercase()
                 .addBackspaceKey()
-        ;
-    }
+        }
 
-    public static void addQwertzRows(KeyboardLayoutBuilder keyboard) {
-        keyboard.newRow()
+        @JvmStatic
+        fun addQwertzRows(keyboard: KeyboardLayoutBuilder) {
+            keyboard.newRow()
                 .addKey('q').onShiftUppercase()
                 .addKey('w').onShiftUppercase()
                 .addKey('e').onShiftUppercase()
@@ -117,11 +165,11 @@ public class Definitions {
                 .addKey('n').onShiftUppercase()
                 .addKey('m').onShiftUppercase()
                 .addBackspaceKey()
-        ;
-    }
+        }
 
-    public static void addAzertyRows(KeyboardLayoutBuilder keyboard) {
-        keyboard.newRow()
+        @JvmStatic
+        fun addAzertyRows(keyboard: KeyboardLayoutBuilder) {
+            keyboard.newRow()
                 .addKey('a').onShiftUppercase()
                 .addKey('z').onShiftUppercase()
                 .addKey('e').onShiftUppercase()
@@ -154,11 +202,12 @@ public class Definitions {
                 .addKey('n').onShiftUppercase()
                 .addKey('!').withSize(.8f)
                 .addKey('?').withSize(.8f)
-                .addTabKey();
-    }
+                .addTabKey()
+        }
 
-    public static void addDvorakRows(KeyboardLayoutBuilder keyboard) {
-        keyboard.newRow()
+        @JvmStatic
+        fun addDvorakRows(keyboard: KeyboardLayoutBuilder) {
+            keyboard.newRow()
                 .addKey('!')
                 .addKey('p').onShiftUppercase()
                 .addKey('y').onShiftUppercase()
@@ -191,64 +240,6 @@ public class Definitions {
                 .addKey('w').onShiftUppercase()
                 .addKey('v').onShiftUppercase()
                 .addKey('z').onShiftUppercase()
-        ;
-    }
-
-    public void addSymbolRows(KeyboardLayoutBuilder keyboard) {
-        keyboard.newRow()
-                .addKey("Home", -18)
-                .addKey("End", -19)
-                .addKey("Del", -21)
-                .addKey("PgUp", -22)
-                .addKey("PgDn", -23)
-                .newRow()
-                .addShiftKey()
-                .addKey("F1", -6)
-                .addKey("F2", -7)
-                .addKey("F3", -8)
-                .addKey("F4", -9)
-                .addKey("F5", -10)
-                .addKey("F6", -11)
-                .addKey("F7", -12)
-                .addBackspaceKey()
-                .newRow()
-                .addKey("Ctrl", 17).asModifier().onCtrlShow("CTRL")
-                .addKey("F8", -13)
-                .addKey("F9", -14)
-                .addKey("F10", -15)
-                .addKey(context.getDrawable(R.drawable.ic_space_bar_24dp), 32).withSize(2f)
-                .addKey("F11", -16)
-                .addKey("F12", -17)
-                .addEnterKey()
-        ;
-
-    }
-
-    public void addClipboardActions(KeyboardLayoutBuilder keyboard) {
-        keyboard.newRow()
-                .addKey(context.getDrawable(R.drawable.ic_select_all_24dp), 53737)
-                .addKey(context.getDrawable(R.drawable.ic_cut_24dp), 53738)
-                .addKey(context.getDrawable(R.drawable.ic_copy_24dp), 53739)
-                .addKey(context.getDrawable(R.drawable.ic_paste_24dp), 53740)
-                .addKey(context.getDrawable(R.drawable.ic_undo_24dp), 53741)
-                .addKey(context.getDrawable(R.drawable.ic_redo_24dp), 53742)
-        ;
-    }
-
-    public void addCustomSpaceRow(KeyboardLayoutBuilder keyboard, String symbols) {
-        char[] chars = symbols.toCharArray();
-
-        keyboard.newRow().addKey("Ctrl", 17).asModifier().onCtrlShow("CTRL");
-
-        for (int i = 0; i < (chars.length + 1) / 2 && chars.length > 0; i++) {
-            keyboard.addKey(chars[i]).withSize(.7f);
         }
-        keyboard.addKey(context.getDrawable(R.drawable.ic_space_bar_24dp), 32).withSize(2f);
-        for (int i = (chars.length + 1) / 2; i < chars.length; i++) {
-            keyboard.addKey(chars[i]).withSize(.7f);
-        }
-        keyboard.addEnterKey();
-
     }
-
 }
