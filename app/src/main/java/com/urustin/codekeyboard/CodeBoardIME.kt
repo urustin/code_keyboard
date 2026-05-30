@@ -567,7 +567,8 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                 registerReceiver(receiver, pFilter)
             }
 
-            val imeIntent = Intent(NotificationReceiver.ACTION_SHOW)
+            // 자기 앱으로 한정한 명시적 인텐트(암시적 인텐트가 아니므로 unsafe 플래그 불필요)
+            val imeIntent = Intent(NotificationReceiver.ACTION_SHOW).setPackage(packageName)
             val imePendingIntent = PendingIntent.getBroadcast(
                 applicationContext, 1, imeIntent, PendingIntent.FLAG_IMMUTABLE
             )
@@ -578,13 +579,9 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                 .setLabel("Now click first icon")
                 .build()
 
-            // 키보드 액션용 PendingIntent
-            var flags = PendingIntent.FLAG_MUTABLE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                flags = PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
-            }
+            // RemoteInput이 답장 텍스트를 채워야 하므로 MUTABLE. 명시적 인텐트라 안전함
             val replyPendingIntent = PendingIntent.getBroadcast(
-                applicationContext, 2, imeIntent, flags
+                applicationContext, 2, imeIntent, PendingIntent.FLAG_MUTABLE
             )
 
             val action = NotificationCompat.Action.Builder(
