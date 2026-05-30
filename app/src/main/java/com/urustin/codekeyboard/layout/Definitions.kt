@@ -75,6 +75,8 @@ class Definitions(private val context: Context) {
         val chars = symbols.toCharArray()
 
         keyboard.newRow().addKey("Ctrl", 17).asModifier().onCtrlShow("CTRL")
+        // Ctrl 옆 globe 키: 다음 입력기(한글 키보드)로 전환
+        keyboard.addKey(context.getDrawable(R.drawable.ic_language_24dp), CODE_SWITCH_LANGUAGE)
 
         val half = (chars.size + 1) / 2
         for (i in 0 until half) {
@@ -90,6 +92,9 @@ class Definitions(private val context: Context) {
     companion object {
         private const val CODE_ESCAPE = -2
         private const val CODE_SYMBOLS = -1
+
+        // globe 키: 다음 입력기(예: 한글 키보드)로 전환하는 키 코드
+        const val CODE_SWITCH_LANGUAGE = 5004
 
         @JvmStatic
         fun addCustomRow(keyboard: KeyboardLayoutBuilder, symbols: String) {

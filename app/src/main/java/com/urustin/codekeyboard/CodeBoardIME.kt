@@ -78,6 +78,7 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
             53740 -> ic.performContextMenuAction(android.R.id.paste)
             53741 -> ic.performContextMenuAction(android.R.id.undo)
             53742 -> ic.performContextMenuAction(android.R.id.redo)
+            Definitions.CODE_SWITCH_LANGUAGE -> switchToNextKeyboard()
             -1 -> {
                 // SYM: 키보드 상태 전환(일반 → 기호 → 클립보드)
                 mKeyboardState = if (mKeyboardState == R.integer.keyboard_normal && !ctrl) {
@@ -453,6 +454,21 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
 
     fun shiftKeyUpdateView() {
         mCurrentKeyboardLayoutView?.applyShiftModifier(shift)
+    }
+
+    // globe 키 처리: 다음 입력기(한글 키보드 등)로 전환. 전환 대상이 없으면 입력기 선택창 표시
+    private fun switchToNextKeyboard() {
+        val switched = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            switchToNextInputMethod(false)
+        } else {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            @Suppress("DEPRECATION")
+            imm?.switchToNextInputMethod(mToken, false) ?: false
+        }
+        if (!switched) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showInputMethodPicker()
+        }
     }
 
     private fun clearLongPressTimer() {
