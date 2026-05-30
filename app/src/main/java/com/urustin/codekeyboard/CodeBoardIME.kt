@@ -103,7 +103,7 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
             53740 -> ic.performContextMenuAction(android.R.id.paste)
             53741 -> ic.performContextMenuAction(android.R.id.undo)
             53742 -> ic.performContextMenuAction(android.R.id.redo)
-            Definitions.CODE_SWITCH_LANGUAGE -> {
+            KeyboardLayoutBuilder.CODE_SWITCH_LANGUAGE -> {
                 // globe: 영문 ↔ 한글 입력 모드 토글
                 koreanMode = !koreanMode
                 setInputView(onCreateInputView())
@@ -419,7 +419,13 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                 }
             } else if (mKeyboardState == R.integer.keyboard_normal) {
                 if (koreanMode) {
-                    // 한글 모드: 두벌식 자판
+                    // 한글 모드: 숫자열/기호열 + 두벌식 자판
+                    if (mCustomSymbolsMain.isNotEmpty()) {
+                        Definitions.addCustomRow(builder, mCustomSymbolsMain)
+                    }
+                    if (mCustomSymbolsMain2.isNotEmpty()) {
+                        Definitions.addCustomRow(builder, mCustomSymbolsMain2)
+                    }
                     Definitions.addKoreanRows(builder)
                 } else {
                     if (mCustomSymbolsMain.isNotEmpty()) {

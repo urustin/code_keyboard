@@ -75,8 +75,6 @@ class Definitions(private val context: Context) {
         val chars = symbols.toCharArray()
 
         keyboard.newRow().addKey("Ctrl", 17).asModifier().onCtrlShow("CTRL")
-        // Ctrl 옆 globe 키: 다음 입력기(한글 키보드)로 전환
-        keyboard.addKey(context.getDrawable(R.drawable.ic_language_24dp), CODE_SWITCH_LANGUAGE)
 
         val half = (chars.size + 1) / 2
         for (i in 0 until half) {
@@ -92,9 +90,6 @@ class Definitions(private val context: Context) {
     companion object {
         private const val CODE_ESCAPE = -2
         private const val CODE_SYMBOLS = -1
-
-        // globe 키: 다음 입력기(예: 한글 키보드)로 전환하는 키 코드
-        const val CODE_SWITCH_LANGUAGE = 5004
 
         @JvmStatic
         fun addCustomRow(keyboard: KeyboardLayoutBuilder, symbols: String) {
@@ -116,7 +111,8 @@ class Definitions(private val context: Context) {
                 .addKey('o').onShiftUppercase()
                 .addKey('p').onShiftUppercase()
                 .newRow()
-                .addKey('a').onShiftUppercase().withSize(1.5f)
+                .addLanguageKey()
+                .addKey('a').onShiftUppercase()
                 .addKey('s').onShiftUppercase()
                 .addKey('d').onShiftUppercase()
                 .addKey('f').onShiftUppercase()
@@ -124,7 +120,7 @@ class Definitions(private val context: Context) {
                 .addKey('h').onShiftUppercase()
                 .addKey('j').onShiftUppercase()
                 .addKey('k').onShiftUppercase()
-                .addKey('l').onShiftUppercase().withSize(1.5f)
+                .addKey('l').onShiftUppercase()
                 .newRow()
                 .addShiftKey()
                 .addKey('z').onShiftUppercase()
@@ -151,7 +147,8 @@ class Definitions(private val context: Context) {
                 .addKey('o').onShiftUppercase()
                 .addKey('p').onShiftUppercase()
                 .newRow()
-                .addKey('a').onShiftUppercase().withSize(1.5f)
+                .addLanguageKey()
+                .addKey('a').onShiftUppercase()
                 .addKey('s').onShiftUppercase()
                 .addKey('d').onShiftUppercase()
                 .addKey('f').onShiftUppercase()
@@ -159,7 +156,7 @@ class Definitions(private val context: Context) {
                 .addKey('h').onShiftUppercase()
                 .addKey('j').onShiftUppercase()
                 .addKey('k').onShiftUppercase()
-                .addKey('l').onShiftUppercase().withSize(1.5f)
+                .addKey('l').onShiftUppercase()
                 .newRow()
                 .addShiftKey()
                 .addKey('y').onShiftUppercase()
@@ -186,6 +183,7 @@ class Definitions(private val context: Context) {
                 .addKey('o').onShiftUppercase()
                 .addKey('p').onShiftUppercase()
                 .newRow()
+                .addLanguageKey()
                 .addKey('q').onShiftUppercase()
                 .addKey('s').onShiftUppercase()
                 .addKey('d').onShiftUppercase()
@@ -223,6 +221,7 @@ class Definitions(private val context: Context) {
                 .addKey('l').onShiftUppercase()
                 .addEnterKey()
                 .newRow()
+                .addLanguageKey()
                 .addKey('a').onShiftUppercase()
                 .addKey('o').onShiftUppercase()
                 .addKey('e').onShiftUppercase()
@@ -262,7 +261,8 @@ class Definitions(private val context: Context) {
                 .addKey('ㅐ').onShiftShow("ㅒ")
                 .addKey('ㅔ').onShiftShow("ㅖ")
                 .newRow()
-                .addKey('ㅁ').withSize(1.5f)
+                .addLanguageKey()
+                .addKey('ㅁ')
                 .addKey('ㄴ')
                 .addKey('ㅇ')
                 .addKey('ㄹ')
@@ -270,7 +270,7 @@ class Definitions(private val context: Context) {
                 .addKey('ㅗ')
                 .addKey('ㅓ')
                 .addKey('ㅏ')
-                .addKey('ㅣ').withSize(1.5f)
+                .addKey('ㅣ')
                 .newRow()
                 .addShiftKey()
                 .addKey('ㅋ')

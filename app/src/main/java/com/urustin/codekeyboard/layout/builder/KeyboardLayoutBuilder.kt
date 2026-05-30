@@ -165,4 +165,14 @@ class KeyboardLayoutBuilder(private val context: Context) {
     fun addEnterKey(): KeyboardLayoutBuilder {
         return addKey(context.getDrawable(R.drawable.ic_keyboard_return_24dp), -4).withSize(1.5f)
     }
+
+    // 영문↔한글 전환용 globe 키(언어 전환). 각 레이아웃의 Shift 위(둘째 행 맨 왼쪽)에 배치한다
+    fun addLanguageKey(): KeyboardLayoutBuilder {
+        return addKey(context.getDrawable(R.drawable.ic_language_24dp), CODE_SWITCH_LANGUAGE)
+    }
+
+    companion object {
+        // globe 키: 영문↔한글 입력 모드 토글
+        const val CODE_SWITCH_LANGUAGE = 5004
+    }
 }
