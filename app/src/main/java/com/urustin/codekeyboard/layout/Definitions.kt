@@ -246,5 +246,41 @@ class Definitions(private val context: Context) {
                 .addKey('v').onShiftUppercase()
                 .addKey('z').onShiftUppercase()
         }
+
+        // 두벌식 한글 자판(쉬프트로 된소리/ㅒㅖ 입력)
+        @JvmStatic
+        fun addKoreanRows(keyboard: KeyboardLayoutBuilder) {
+            keyboard.newRow()
+                .addKey('ㅂ').onShiftShow("ㅃ")
+                .addKey('ㅈ').onShiftShow("ㅉ")
+                .addKey('ㄷ').onShiftShow("ㄸ")
+                .addKey('ㄱ').onShiftShow("ㄲ")
+                .addKey('ㅅ').onShiftShow("ㅆ")
+                .addKey('ㅛ')
+                .addKey('ㅕ')
+                .addKey('ㅑ')
+                .addKey('ㅐ').onShiftShow("ㅒ")
+                .addKey('ㅔ').onShiftShow("ㅖ")
+                .newRow()
+                .addKey('ㅁ').withSize(1.5f)
+                .addKey('ㄴ')
+                .addKey('ㅇ')
+                .addKey('ㄹ')
+                .addKey('ㅎ')
+                .addKey('ㅗ')
+                .addKey('ㅓ')
+                .addKey('ㅏ')
+                .addKey('ㅣ').withSize(1.5f)
+                .newRow()
+                .addShiftKey()
+                .addKey('ㅋ')
+                .addKey('ㅌ')
+                .addKey('ㅊ')
+                .addKey('ㅍ')
+                .addKey('ㅠ')
+                .addKey('ㅜ')
+                .addKey('ㅡ')
+                .addBackspaceKey()
+        }
     }
 }

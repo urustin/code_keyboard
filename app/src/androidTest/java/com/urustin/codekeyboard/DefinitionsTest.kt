@@ -57,6 +57,13 @@ class DefinitionsTest {
         validate(builder)
     }
 
+    @Test
+    fun addKoreanRows() {
+        val builder = builder()
+        Definitions.addKoreanRows(builder)
+        validate(builder)
+    }
+
     private fun validate(builder: KeyboardLayoutBuilder) {
         for (key in builder.build()) {
             assertNotNull(key.info)

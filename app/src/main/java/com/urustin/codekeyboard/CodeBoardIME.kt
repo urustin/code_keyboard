@@ -64,11 +64,36 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
 
     private var mNotificationReceiver: NotificationReceiver? = null
 
+    // 한글 입력 모드 여부와 한글 조합기
+    private var koreanMode = false
+    private val hangulComposer = HangulComposer()
+
     override fun onKey(primaryCode: Int, keyCodes: IntArray?) {
         // 주의: 롱프레스는 그 다음, 여기는 onDown 시점
         val ic: InputConnection = currentInputConnection
         var code = primaryCode.toChar()
         Log.d(TAG, "onKey: $primaryCode")
+
+        // 한글 모드: 자모는 조합기로 보내고, 백스페이스/그 외 키는 조합 확정 후 일반 처리
+        if (koreanMode) {
+            if (isHangulJamo(primaryCode)) {
+                var jamo = primaryCode.toChar()
+                if (shift) {
+                    jamo = koreanShift(jamo)
+                    if (!shiftLock) {
+                        shift = false
+                        ic.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SHIFT_LEFT))
+                        shiftKeyUpdateView()
+                    }
+                }
+                hangulComposer.onJamo(ic, jamo)
+                return
+            }
+            if (primaryCode == -5 && hangulComposer.backspace(ic)) {
+                return
+            }
+            hangulComposer.finish(ic)
+        }
 
         when (primaryCode) {
             // shift/ctrl 메타 수정자를 쓰지 않는 케이스 먼저 처리
@@ -78,7 +103,11 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
             53740 -> ic.performContextMenuAction(android.R.id.paste)
             53741 -> ic.performContextMenuAction(android.R.id.undo)
             53742 -> ic.performContextMenuAction(android.R.id.redo)
-            Definitions.CODE_SWITCH_LANGUAGE -> switchToNextKeyboard()
+            Definitions.CODE_SWITCH_LANGUAGE -> {
+                // globe: 영문 ↔ 한글 입력 모드 토글
+                koreanMode = !koreanMode
+                setInputView(onCreateInputView())
+            }
             -1 -> {
                 // SYM: 키보드 상태 전환(일반 → 기호 → 클립보드)
                 mKeyboardState = if (mKeyboardState == R.integer.keyboard_normal && !ctrl) {
@@ -389,17 +418,22 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
                     definitions.addCustomSpaceRow(builder, mCustomSymbolsMainBottom)
                 }
             } else if (mKeyboardState == R.integer.keyboard_normal) {
-                if (mCustomSymbolsMain.isNotEmpty()) {
-                    Definitions.addCustomRow(builder, mCustomSymbolsMain)
-                }
-                if (mCustomSymbolsMain2.isNotEmpty()) {
-                    Definitions.addCustomRow(builder, mCustomSymbolsMain2)
-                }
-                when (mLayout) {
-                    1 -> Definitions.addAzertyRows(builder)
-                    2 -> Definitions.addDvorakRows(builder)
-                    3 -> Definitions.addQwertzRows(builder)
-                    else -> Definitions.addQwertyRows(builder)
+                if (koreanMode) {
+                    // 한글 모드: 두벌식 자판
+                    Definitions.addKoreanRows(builder)
+                } else {
+                    if (mCustomSymbolsMain.isNotEmpty()) {
+                        Definitions.addCustomRow(builder, mCustomSymbolsMain)
+                    }
+                    if (mCustomSymbolsMain2.isNotEmpty()) {
+                        Definitions.addCustomRow(builder, mCustomSymbolsMain2)
+                    }
+                    when (mLayout) {
+                        1 -> Definitions.addAzertyRows(builder)
+                        2 -> Definitions.addDvorakRows(builder)
+                        3 -> Definitions.addQwertzRows(builder)
+                        else -> Definitions.addQwertyRows(builder)
+                    }
                 }
                 definitions.addCustomSpaceRow(builder, mCustomSymbolsMainBottom)
             } else if (mKeyboardState == R.integer.keyboard_clipboard) {
@@ -444,6 +478,7 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
 
     override fun onStartInputView(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInputView(attribute, restarting)
+        hangulComposer.reset() // 새 입력 필드에서는 조합 상태 초기화
         setInputView(onCreateInputView())
         sEditorInfo = attribute
     }
@@ -456,19 +491,13 @@ class CodeBoardIME : InputMethodService(), KeyboardView.OnKeyboardActionListener
         mCurrentKeyboardLayoutView?.applyShiftModifier(shift)
     }
 
-    // globe 키 처리: 다음 입력기(한글 키보드 등)로 전환. 전환 대상이 없으면 입력기 선택창 표시
-    private fun switchToNextKeyboard() {
-        val switched = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            switchToNextInputMethod(false)
-        } else {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            @Suppress("DEPRECATION")
-            imm?.switchToNextInputMethod(mToken, false) ?: false
-        }
-        if (!switched) {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showInputMethodPicker()
-        }
+    // 호환 자모(U+3131~U+3163) 범위인지
+    private fun isHangulJamo(code: Int): Boolean = code in 0x3131..0x3163
+
+    // 쉬프트가 눌렸을 때 된소리/이중모음으로 매핑
+    private fun koreanShift(c: Char): Char = when (c) {
+        'ㅂ' -> 'ㅃ'; 'ㅈ' -> 'ㅉ'; 'ㄷ' -> 'ㄸ'; 'ㄱ' -> 'ㄲ'; 'ㅅ' -> 'ㅆ'
+        'ㅐ' -> 'ㅒ'; 'ㅔ' -> 'ㅖ'; else -> c
     }
 
     private fun clearLongPressTimer() {
